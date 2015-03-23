@@ -1,0 +1,46 @@
+<html>
+<head>
+<script src="http://fb.me/react-0.13.0.js"></script>
+<script src="http://fb.me/JSXTransformer-0.13.0.js"></script>
+</head>
+
+<body>
+
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+
+
+
+</body>
+
+<script type="text/javascript">
+	
+	var socket = io('http://localhost:8085');
+</script>
+
+  <script type="text/jsx">
+
+
+  var Knapp = React.createClass({
+
+  	onClick: function(){
+  		console.log("sender en hello");
+  		socket.emit('hello', {});
+
+  	},
+
+  	render: function(){
+
+
+  		return <button onClick={this.onClick}>Trykk herr2r</button>;
+  	}
+
+
+  });
+
+React.render(<Knapp/>,document.body);
+
+  </script>
+
+
+
+</html>

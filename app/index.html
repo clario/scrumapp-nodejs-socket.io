@@ -1,0 +1,210 @@
+<html>
+<head>
+<script src="http://fb.me/react-0.13.0.js"></script>
+<script src="http://fb.me/JSXTransformer-0.13.0.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+
+<!-- Latest compiled and minified JavaScript -->
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<style>
+  body{
+    margin: 40px;
+  }
+
+</style>
+
+<body>
+
+<script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
+
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+</body>
+
+<h1>Dataloy Scrum</h1>
+<div id="scrum"/>
+<script type="text/javascript">
+	
+	var socket = io('http://192.168.1.3:8085');
+	var user =  new Date().toString();
+	console.log(user);
+	
+	var ppl = [];
+	
+
+  
+
+</script>
+
+  <script type="text/jsx">
+
+
+  var Knapp = React.createClass({
+
+  	onClick: function(){
+  		console.log("sender en hello");
+  		socket.emit('hello', {});
+
+  	},
+
+  	render: function(){
+
+
+  		return <button className="btn btn-default" onClick={this.onClick}>Trykk her2</button>;
+  	}
+
+
+  });
+
+  var InputNavn = React.createClass({
+
+	getInitialState: function(){
+		return {name: ""}
+
+	},
+	componentDidMount : function(){
+		
+		socket.emit("send",{username:user});
+	},
+
+  	onClick: function(){
+  		ScrumApp.refs.nameSet("hei")
+
+  	},
+  	onChange: function(e){
+  		this.setState({name:e.target.value});
+
+  	},
+
+  	render: function(){
+
+
+  		return <div>Fyll inn navn: <input type="text" placeholder="navn" onChange={this.onChange} value={this.state.name}/>
+		<button onClick={this.onClick}>Ok</button>
+  		</div>;
+  	}
+
+
+  });
+
+
+
+ var Liste = React.createClass({
+	getInitialState  : function(){
+		
+    socket.on('newList', this.newData);
+
+		return {array:[]};	
+	},
+
+  newData : function(data){
+    console.log("nyBruker joina");
+     ppl = data;
+    this.setState({array: data})
+
+    
+
+  },
+
+	componentWillMount : function(){
+		var _this = this;
+
+
+	},	
+
+  	render: function(){
+		
+		function listItem(item){
+
+		return <a className="list-group-item"><span className="list-group-item-heading">{item.name + " " + item.number}</span></a>;
+		}
+
+  		return <div>{this.state.array.map(listItem)}</div>;
+  	}
+
+
+  });
+
+var numbers = [1,3,5,8,13,20,40,60,100];
+
+var divStyle = {
+  "marginLeft": 10,
+   "marginTop": 10,
+   "fontSize": 35
+
+};
+
+
+ var ButtonNumber = React.createClass({
+
+  	onClick : function(value){
+        socket.emit("setNumber",{number:value});
+
+    },
+
+    render: function(){	
+      var _this = this;
+		function items(item){
+
+			return <button value={item} id={item} onClick={function(){_this.onClick(item)}} className="btn btn-primary" style={divStyle}>{item}</button>;
+		}
+  				
+  		return <div>{this.props.numbers.map(items)}</div>;
+  	}
+
+  });
+
+   var Test = React.createClass({
+	klikk : function(){
+		console.log("Kliket")
+		socket.emit("random",{});
+	},
+
+  	render: function(){	
+		
+  				
+  		return <button onClick={this.klikk}>test</button>;
+  	}
+
+  });
+
+
+ var ScrumApp = React.createClass({
+	nameSet : function(name){
+
+		console.log(name);
+	},
+
+  	onClick: function(){
+  		console.log("sender en hello");
+  		socket.emit('hello', {});
+
+  	},
+
+  	render: function(){
+
+				
+  		return <div><InputNavn/><br/><ButtonNumber numbers={numbers}/><br/><div className="list-group"><Liste array={ppl}/></div><br/><Test/></div>;
+  	}
+
+
+  });
+
+
+
+
+React.render(<ScrumApp/>,scrum);
+
+  </script>
+
+
+
+</html>
