@@ -4,13 +4,15 @@ var express = require('express');
 var cool = require('cool-ascii-faces');
 var app1 = express();
 
-app1.set('port', (process.env.PORT || 5000));
+var port = process.env.PORT || 5000;
 
-app1.get('/', function(request, response) {
-  response.send(cool());
+app1.set('port', (port));
+
+app.get('/', function (req, res) {
+  res.sendfile(__dirname + '/index.html');
 });
 
-app.listen(8085);
+app.listen(port);
 
 console.log("Server starter på port 8085");
 
