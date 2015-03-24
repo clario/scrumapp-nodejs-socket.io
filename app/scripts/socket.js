@@ -1,7 +1,6 @@
 var app = require('http').createServer();
 var io = require('socket.io')(app);
 var express = require('express');
-var cookie = require('cookie');
 var cool = require('cool-ascii-faces');
 var app1 = express();
 
