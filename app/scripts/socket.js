@@ -1,18 +1,18 @@
-var app = require('http').createServer();
+//var app = require('http').createServer();
+
+var app = require('express').createServer()
 var io = require('socket.io')(app);
-var express = require('express');
-var cool = require('cool-ascii-faces');
-var app1 = express();
 
 var port = process.env.PORT || 5000;
 
-app1.set('port', (port));
+
+app.listen(port);
 
 app.get('/', function (req, res) {
   res.sendfile('/index.html');
 });
 
-app.listen(port);
+
 
 console.log("Server starter på port 8085");
 
