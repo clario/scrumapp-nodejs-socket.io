@@ -1,1 +1,1 @@
-web: node app/scripts/index.js
+web: node /scripts/index.js
