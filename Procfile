@@ -1,1 +1,1 @@
-web: node app/scripts/socket.js
+web: node socket.js
