@@ -34,7 +34,7 @@
 
 <script type="text/javascript">
 
-	var socket = io();
+	var socket = io("localhost:5000");
 
 
 	var user =  new Date().toString();
@@ -73,11 +73,15 @@ return {name: ""}
         onChange: function(e){
         this.setState({name:e.target.value});
         },
+        onKeydown: function(event){
+            if (event.keyCode === 13){
+                document.getElementById('sendButton').click()
+            }
+        },
         render: function(){
 
-
-        return <div>Fyll inn navn:<input type="text" placeholder="navn" onChange={this.onChange} value={this.state.name} />
-                <button style={okStyle} className="btn btn-default" onClick={this.onClick}>Ok</button>
+        return <div>Fyll inn navn:<input type="text" placeholder="navn" onKeyDown={this.onKeydown} onChange={this.onChange} value={this.state.name} />
+                <button id="sendButton" style={okStyle} className="btn btn-default" onClick={this.onClick}>Ok</button>
                 </div>;
         }
 
