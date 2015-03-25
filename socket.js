@@ -271,6 +271,9 @@ io.on('connection', function (socket) {
         var uCookie = userCookie.substring(index, userCookie.length);
 
         console.log(uCookie);
+        //Before user=cb50446e-1e11-4372-9156-b249f2c4e3b1; expires=; expires=Thu, 26 Mar 2015 21:25:21 GMT; path=/
+        //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
+        uCookie = uCookie.substring(0,41);
         setNameOnUser(data.nameOnPerson, uCookie);
         io.emit("newList", ppl);
 
