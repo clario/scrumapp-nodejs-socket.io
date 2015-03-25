@@ -29,15 +29,17 @@ var ppl = [];
 var sessions = [];
 
 function checkIfExist(ses) {
+    console.log("checking if sess exist, this cam in: " + ses )
     for (var i = 0; i < ppl.length; i++) {
+        console.log(ppl[i].ses);
         if (ppl[i].ses === ses) {
+            console.log("We got a macht!")
             return i;
         }
 
     }
     return -1;
 }
-
 
 
 function setNumberOnUser(number, ses) {
@@ -105,7 +107,8 @@ function giBestemtTall(tall) {
 function addPerson(ses) {
     console.log(ses);
     var rand = personer[Math.floor(Math.random() * personer.length)];
-    var per = {"name": rand, "number": 0, "ses": ses};
+    var now = new Date().getTime();
+    var per = {"name": rand, "number": 0, "ses": ses, "lastActive": now};
     ppl.push(per);
     return ppl;
 }
@@ -248,7 +251,9 @@ io.on('connection', function (socket) {
         var uCookie = userCookie.substring(index, userCookie.length);
 
         console.log(uCookie);
-        //	console.log(data.number + " " + uCookie);
+        //Before user=cb50446e-1e11-4372-9156-b249f2c4e3b1; expires=; expires=Thu, 26 Mar 2015 21:25:21 GMT; path=/
+        //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
+        uCookie = uCookie.substring(0,41);
         setNumberOnUser(data.number, uCookie);
         //giBestemtTall(data.number);
         io.emit("newList", ppl);
