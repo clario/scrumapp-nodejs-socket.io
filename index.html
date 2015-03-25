@@ -21,7 +21,7 @@
 <body>
   <h1>Dataloy Scrum</h1>
   <div id="scrum"/>
-<audio id="audio" src="http://www.soundjay.com/button/beep-21.mp3" preload="auto"  ></audio>
+
 <script src="https://cdn.socket.io/socket.io-1.3.4.js"></script>
 
 
@@ -101,7 +101,7 @@ return {name: ""}
 
                 },
                 toogleHide : function(data){
-                audio.play();
+              //  audio.play();
                         var _this = this;
                         if (data.hide){
                 _this.setState({hide: false});
@@ -207,7 +207,7 @@ return {name: ""}
         });
         React.render(<ScrumApp/>,scrum);
   </script>
-
+<audio id="audio" src="http://www.soundjay.com/button/beep-21.mp3" preload="auto"  ></audio>
 </body>
 
 </html>
