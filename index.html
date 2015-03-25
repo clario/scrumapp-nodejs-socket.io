@@ -52,8 +52,6 @@
 
   });
 
-
-
 </script>
 
   <script type="text/jsx">
@@ -78,9 +76,9 @@ return {name: ""}
         render: function(){
 
 
-        return < div > Fyll inn navn: < input type = "text" placeholder = "navn" onChange = {this.onChange} value = {this.state.name} / >
-                < button style = {okStyle} className = "btn btn-default"  onClick = {this.onClick} > Ok < /button>
-                < /div>;
+        return <div>Fyll inn navn:<input type="text" placeholder="navn" onChange={this.onChange} value={this.state.name} />
+                <button style={okStyle} className="btn btn-default" onClick={this.onClick}>Ok</button>
+                </div>;
         }
 
 
@@ -119,14 +117,14 @@ return {name: ""}
                 var _this = this;
                         function listItem(item){
                         if (!_this.state.hide){
-                        return < a className = "list-group-item" > < h3 className = "list-group-item-heading" > {item.name + " " + item.number} < /h3></a > ;
+                          return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " " + item.number}</h3></a> ;
                         } else{
-                        return < a className = "list-group-item" > < h3 className = "list-group-item-heading" > {item.name + " " + "#"} < /h3></a > ;
+                          return <a className="list-group-item"> <h3 className="list-group-item-heading"> {item.name + " " + "#"}</h3></a> ;
                         }
 
                         }
 
-                return < div > {this.state.array.map(listItem)} < /div>;
+                return <div>{this.state.array.map(listItem)}</div>;
                 }
 
 
@@ -154,10 +152,10 @@ return {name: ""}
                 var _this = this;
                         function items(item){
 
-                        return < button value = {item} id = {item} onClick = {function(){_this.onClick(item)}} className = "btn btn-primary" style = {divStyle} > {item} < /button>;
+                        return <button value={item} id={item} onClick={function(){_this.onClick(item)}} className="btn btn-primary" style={divStyle}>{item}</button>;
                         }
 
-                return < div > {this.props.numbers.map(items)} < /div>;
+                return <div>{this.props.numbers.map(items)}</div>;
                 }
 
         });
@@ -168,8 +166,7 @@ return {name: ""}
         },
                 render: function(){
 
-
-                return < button className = "btn btn-primary" style = {divStyle} onClick = {this.klikk} > test < /button>;
+                return <button className="btn btn-primary" style={divStyle} onClick={this.klikk}>test</button>;
                 }
 
         });
@@ -179,9 +176,7 @@ return {name: ""}
                 socket.emit("toogleHide", {});
         },
                 render: function(){
-
-
-                return < button className = "btn btn-primary" style = {divStyle} onClick = {this.klikk} > ToogleHide < /button>;
+                return <button className="btn btn-primary" style={divStyle} onClick={this.klikk}>ToogleHide</button>;
                 }
 
         });
@@ -191,9 +186,7 @@ return {name: ""}
                 socket.emit("restart", {});
         },
                 render: function(){
-
-
-                return < button className = "btn btn-primary" style = {divStyle} onClick = {this.klikk} > Restart < /button>;
+                  return <button className="btn btn-primary" style={divStyle} onClick={this.klikk}>Restart</button>;
                 }
 
         });
@@ -207,14 +200,12 @@ return {name: ""}
                         socket.emit('hello', {});
                 },
                 render: function(){
-
-
-                return < div > < InputNavn / > < br / > < ButtonNumber numbers = {numbers} / > < br / > < div className = "list-group" > < Liste array = {ppl} / > < /div><Test/ > < ToogleHide / > < Restart / > < /div>;
+                return <div><InputNavn/><br/><ButtonNumber numbers={numbers}/><br/>< div className="list-group"><Liste array={ppl} /></div><Test/><ToogleHide/><Restart/></div>;
                 }
 
 
         });
-        React.render( < ScrumApp / > , scrum);
+        React.render(<ScrumApp/>,scrum);
   </script>
 
 </body>
