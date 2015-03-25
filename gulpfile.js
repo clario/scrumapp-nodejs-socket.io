@@ -5,7 +5,9 @@ var source = require('vinyl-source-stream');
 var browserify = require('browserify');
 var mold = require('mold-source-map');
 
-var baseDir = './app/';
+//var baseDir = './app/';
+var baseDir = '/';
+
 var scriptDir = baseDir + 'scripts/';
 var styleDir = baseDir + 'styles/';
 var distDir = baseDir + 'dist/';
