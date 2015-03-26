@@ -238,7 +238,7 @@ io.on('connection', function (socket) {
          updateLastActive(uCookie);
     }
 
-    socket.emit("toogleHide", {"hide": hide});
+    socket.emit("toogleHide", {"hide": !hide});
     var tempppl = getLastActive();
    // console.log(JSON.stringify(tempppl));
     //console.log("sending out new list");
