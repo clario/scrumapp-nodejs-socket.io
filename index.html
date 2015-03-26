@@ -18,6 +18,7 @@
 
   .rotate{
       animation: spin 4s linear infinite;
+      -webkit-animation: spin2 4s infinite linear;
           -webkit-transform-origin: 50% 50%;
     -moz-transform-origin: 50% 50%;
     -o-transform-origin: 50% 50%;
@@ -27,8 +28,13 @@
   }
 
   @keyframes spin {
-    0% { -webkit-transform: rotate(0deg);}
-100% { -webkit-transform: rotate(360deg);} 
+    from { -webkit-transform: rotate(0deg);}
+to { -webkit-transform: rotate(360deg);} 
+}
+
+@-webkit-keyframes spin2 {
+from { -webkit-transform: rotate(0deg);}
+to { -webkit-transform: rotate(360deg);}
 }
 
 </style>
