@@ -6,7 +6,7 @@ var browserify = require('browserify');
 var mold = require('mold-source-map');
 
 //var baseDir = './app/';
-var baseDir = '/';
+var baseDir = './';
 
 var scriptDir = baseDir + 'scripts/';
 var styleDir = baseDir + 'styles/';
@@ -34,3 +34,9 @@ gulp.task('watch', function() {
 });
 
 gulp.task('default', ['server', 'watch']);
+
+// Handle the error
+function errorHandler (error) {
+  console.log(error.toString());
+  this.emit('end');
+}

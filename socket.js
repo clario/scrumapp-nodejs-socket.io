@@ -28,6 +28,11 @@ var ppl = [];
 
 var sessions = [];
 
+var currentActiveUsers = 0;
+
+
+
+
 function checkIfExist(ses) {
     console.log("checking if sess exist, this cam in: " + ses )
     for (var i = 0; i < ppl.length; i++) {
@@ -50,7 +55,7 @@ function setNumberOnUser(number, ses) {
         console.log("Setter " + number + " på bruker " + ppl.name);
         return ppl;
     } else {
-        console.log("session finst ikkje!");
+        console.log("session dosnt exist!");
     }
 
 
@@ -64,7 +69,7 @@ function setNameOnUser(name, ses) {
         console.log("Setter " + name + " på bruker " + ppl.name);
         return ppl;
     } else {
-        console.log("session finst ikkje!");
+        console.log("session dosnt exist!");
     }
 
 
@@ -73,12 +78,10 @@ function setNameOnUser(name, ses) {
 function checkIfSessionExist(ses) {
 //DOSNT exist..
     if (checkIfExist(ses) === -1) {
-
         console.log("Session finst ikkje, legger denne til");
-
         return false;
     }
-    console.log("Session finst, legger ikkje til");
+   
     return true;
 }
 
@@ -93,7 +96,7 @@ function giRandomTall() {
     }
 }
 
-function giBestemtTall(tall) {
+function setNumberOnAll(tall) {
 
     for (var i = 0; i < ppl.length; i++) {
 
@@ -111,8 +114,43 @@ function addPerson(ses) {
     var per = {"name": rand, "number": 0, "ses": ses, "lastActive": now};
     ppl.push(per);
     return ppl;
+};
+
+function updateLastActive(ses){
+    var oldValue = currentActiveUsers;
+    var index = checkIfExist(ses);
+    if(index !== -1){
+        var now = new Date().getTime();
+        ppl[index].lastActive = now;
+    }
+    var newPpl = getLastActive();
+    var newValue = currentActiveUsers;
+    if(oldValue !== newValue){
+         io.emit("newList", newPpl);
+    }
 }
-;
+
+function getLastActive(){
+    var array = [];
+   // var fiveMinutes = 300000;
+    var twoMinutes = 120000;
+    var size = ppl.length;
+    var active = 0; 
+    for(var i = 0; i < ppl.length; i++){
+        var now = new Date().getTime();
+        var userTime = ppl[i].lastActive+twoMinutes;
+        if(userTime > now ){
+            array.push(ppl[i]);
+            active++;
+        }else{
+           // console.log("ikkje aktiv")
+        }
+
+    }
+    currentActiveUsers = active;
+    //console.log("Number of active users: " + active + "/" + size);
+    return array;
+}
 
 function randomString() {
     var a = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -136,15 +174,21 @@ function leggTilCookie(socket) {
     socket.emit("setCookie", cookie);
 
     var cookieStringen = "user=" + randomSomething;
-    io.emit("newList", pa);
+    //io.emit("newList", pa);
     socket.request.headers.cookie = 'user=' + randomSomething + '; expires=' + expires + '; path=/';
-    var pa = addPerson(cookieStringen);
+    addPerson(cookieStringen);
 
 
 }
 
 
 io.on('connection', function (socket) {
+    
+    setInterval(function() {
+     socket.emit("areYouThere",{});
+    }, 60 * 1000);
+
+
     //console.log(sessions.length);
     //console.log(sessions.join());
     var userCookie = socket.request.headers.cookie;
@@ -158,7 +202,7 @@ io.on('connection', function (socket) {
     }
 
 
-    //Bruker har ingen cookie
+    //User does not have any cookie!
     if (index === -1) {
         var date = new Date();
         date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000)); // set day value to expiry
@@ -173,21 +217,22 @@ io.on('connection', function (socket) {
         socket.emit("setCookie", cookie);
 
         var cookieStringen = "user=" + randomSomething;
-        io.emit("newList", pa);
+        
         socket.request.headers.cookie = 'user=' + randomSomething + '; expires=' + expires + '; path=/';
         var pa = addPerson(cookieStringen);
 
 
 
-    } else if (index !== -1 && checkIfExist(uCookie) === -1) {
+    } else if(index !== -1 && checkIfExist(uCookie) === -1){
         leggTilCookie(socket);
 
-    } else {
-        console.log("Er denne session lagret i minne ? " + checkIfSessionExist(uCookie));
+    } else{
+        //strange state;
     }
 
     socket.emit("toogleHide", {"hide": hide});
-
+    var tempppl = getLastActive();
+     io.emit("newList", tempppl);
     //console.log("En bruker koblet til.");
 
 
@@ -197,17 +242,8 @@ io.on('connection', function (socket) {
 
 
     socket.on('send', function (data) {
-        //	console.log("Tar imot data");
-        //	console.log(data.username);
-        //	console.log(data);
-        //if(!checkIfSessionExist(socket.id)){
-        //	addPerson();
-        //}
-
-        //console.log("sender flg liste: " + JSON.stringify(ppl));
-        //console.log(ppl.length);
-
-        io.emit("newList", ppl);
+        var tempppl = getLastActive();
+        io.emit("newList", tempppl);
 
 
     });
@@ -231,8 +267,9 @@ io.on('connection', function (socket) {
 
         hide = false
         io.emit("toogleHide", {"hide": hide});
-        giBestemtTall(0);
-        io.emit("newList", ppl);
+        setNumberOnAll(0);
+        var tempppl = getLastActive();
+        io.emit("newList", tempppl);
 
     });
 
@@ -255,8 +292,9 @@ io.on('connection', function (socket) {
         //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
         uCookie = uCookie.substring(0,41);
         setNumberOnUser(data.number, uCookie);
-        //giBestemtTall(data.number);
-        io.emit("newList", ppl);
+         var tempppl = getLastActive();
+
+        io.emit("newList", tempppl);
 
     });
 
@@ -265,8 +303,6 @@ io.on('connection', function (socket) {
         //	console.log("Setting number" + data.number);
 
         var userCookie = socket.request.headers.cookie;
-
-
         var index = userCookie.indexOf("user=");
         var uCookie = userCookie.substring(index, userCookie.length);
 
@@ -275,16 +311,29 @@ io.on('connection', function (socket) {
         //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
         uCookie = uCookie.substring(0,41);
         setNameOnUser(data.nameOnPerson, uCookie);
-        io.emit("newList", ppl);
+         var tempppl = getLastActive();
+        io.emit("newList", tempppl);
 
     });
 
-    socket.on("random", function () {
+  //  socket.on("random", function () {
 
-        giRandomTall();
-        io.emit("newList", ppl);
+    //    giRandomTall();
+      //   var tempppl = getLastActive();
+    //    io.emit("newList", tempppl);
+  //  })
+
+
+    socket.on("yesIamHere",function(data){
+        
+        var userCookie = socket.request.headers.cookie;
+        var index = userCookie.indexOf("user=");
+        var uCookie = userCookie.substring(index, userCookie.length);
+        console.log(uCookie);
+        //Before user=cb50446e-1e11-4372-9156-b249f2c4e3b1; expires=; expires=Thu, 26 Mar 2015 21:25:21 GMT; path=/
+        //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
+        uCookie = uCookie.substring(0,41);
+        updateLastActive(uCookie);
     })
-
-
 
 });
