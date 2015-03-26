@@ -16,7 +16,7 @@ app.listen(port);
 
 
 
-console.log("Server starter på port 8085");
+console.log("Server starter på port "+port+".");
 
 var hide = false;
 
@@ -197,7 +197,7 @@ io.on('connection', function (socket) {
         var index = userCookie.indexOf("user=");
         //console.log("indeksen er " + index);
         var uCookie = userCookie.substring(index, userCookie.length);
-        //console.log(socket.request.headers.cookie); 		
+        //console.log(socket.request.headers.cookie);
 
     }
 
@@ -233,6 +233,7 @@ io.on('connection', function (socket) {
     socket.emit("toogleHide", {"hide": hide});
     var tempppl = getLastActive();
      io.emit("newList", tempppl);
+
     //console.log("En bruker koblet til.");
 
 
@@ -248,13 +249,13 @@ io.on('connection', function (socket) {
 
     });
 
-    socket.on('toogleHide', function () {
+    socket.on('toggleHide', function () {
         hide = !hide;
         if (!hide) {
 
-            io.emit("toogleHide", {"hide": hide});
+            io.emit("toggleHide", {"hide": hide});
         } else {
-            io.emit("toogleHide", {"hide": hide});
+            io.emit("toggleHide", {"hide": hide});
 
         }
 
@@ -270,7 +271,6 @@ io.on('connection', function (socket) {
         setNumberOnAll(0);
         var tempppl = getLastActive();
         io.emit("newList", tempppl);
-
     });
 
 
