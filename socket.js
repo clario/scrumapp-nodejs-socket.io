@@ -16,7 +16,7 @@ app.listen(port);
 
 
 
-console.log("Server starter på port 8085");
+console.log("Server starter på port "+port+".");
 
 var hide = false;
 
@@ -153,7 +153,7 @@ io.on('connection', function (socket) {
         var index = userCookie.indexOf("user=");
         //console.log("indeksen er " + index);
         var uCookie = userCookie.substring(index, userCookie.length);
-        //console.log(socket.request.headers.cookie); 		
+        //console.log(socket.request.headers.cookie);
 
     }
 
@@ -186,7 +186,7 @@ io.on('connection', function (socket) {
         console.log("Er denne session lagret i minne ? " + checkIfSessionExist(uCookie));
     }
 
-    socket.emit("toogleHide", {"hide": hide});
+    socket.emit("toggleHide", {"hide": hide});
 
     //console.log("En bruker koblet til.");
 
@@ -212,13 +212,13 @@ io.on('connection', function (socket) {
 
     });
 
-    socket.on('toogleHide', function () {
+    socket.on('toggleHide', function () {
         hide = !hide;
         if (!hide) {
 
-            io.emit("toogleHide", {"hide": hide});
+            io.emit("toggleHide", {"hide": hide});
         } else {
-            io.emit("toogleHide", {"hide": hide});
+            io.emit("toggleHide", {"hide": hide});
 
         }
 
@@ -230,7 +230,7 @@ io.on('connection', function (socket) {
     socket.on('restart', function () {
 
         hide = false
-        io.emit("toogleHide", {"hide": hide});
+        io.emit("toggleHide", {"hide": hide});
         giBestemtTall(0);
         io.emit("newList", ppl);
 

@@ -29,12 +29,30 @@
 
   @keyframes spin {
     from { -webkit-transform: rotate(0deg);}
-to { -webkit-transform: rotate(360deg);} 
+to { -webkit-transform: rotate(360deg);}
 }
 
 @-webkit-keyframes spin2 {
 from { -webkit-transform: rotate(0deg);}
 to { -webkit-transform: rotate(360deg);}
+}
+
+.list-group-item.low {
+    color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+
+.list-group-item.high {
+    color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+
+.list-group-item.green {
+    color: #3c763d;
+background-color: #dff0d8;
+border-color: #d6e9c6;
 }
 
 </style>
@@ -45,7 +63,6 @@ to { -webkit-transform: rotate(360deg);}
 
 <script src="http://cdn.socket.io/socket.io-1.3.4.js"></script>
 
-
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -54,6 +71,7 @@ to { -webkit-transform: rotate(360deg);}
 
 
 <script type="text/javascript">
+
 
 	var socket = io();
 
@@ -112,7 +130,7 @@ return {name: ""}
         getInitialState  : function(){
 
         socket.on('newList', this.newData);
-                socket.on("toogleHide", this.toogleHide);
+                socket.on("toggleHide", this.toggleHide);
                 return {array:[], hide : false};
         },
                 newData : function(data){
@@ -125,25 +143,78 @@ return {name: ""}
 
 
                 },
-                toogleHide : function(data){
+                setHighAndLow : function(){
+                    var _this = this;
+                    var resultMap ={};
+                    var highest=0;
+                    var lowest=100;
+                    for(var i in ppl){
+                        var u=ppl[i];
+                        n=u.number;
+                        if(n){
+
+                        }
+                        if(u.number>highest){
+                            highest=u.number;
+
+                        }
+                        if(u.number<lowest){
+                            lowest=u.number;
+
+                        }
+                        if(!resultMap[u.number]){
+                            resultMap[u.number]=[u];
+                        }
+                        else{
+                            resultMap[u.number].push(u);
+                        }
+                    }
+                    _this.allSameNumber=Object.keys(resultMap).length==1? true:false;
+                    _this.high =resultMap[highest];
+                    _this.low =resultMap[lowest];
+
+                },
+                resetHighAndLow : function(){
+                    var _this = this;
+                    _this.high=[];
+                    _this.low=[];
+                },
+                toggleHide : function(data){
               //  audio.play();
-                        var _this = this;
-                        if (data.hide){
-                _this.setState({hide: false});
-                } else{
-                _this.setState({hide: true});
-                }
+                    var _this = this;
+                    if (data.hide){
+                        _this.setHighAndLow();
+                        _this.setState({hide: false});
+                    }
+                    else{
+                        _this.resetHighAndLow();
+                        _this.setState({hide: true});
+                    }
 
                 },
                 componentWillMount : function(){
                 var _this = this;
+                this.high=[];
+                this.low=[];
+                this.allSameNumber=true;
                 },
                 render: function(){
                 var _this = this;
                         function listItem(item){
                         if (!_this.state.hide){
-                          return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " " + item.number}</h3></a> ;
+                            var classString="list-group-item";
+                            if(_this.allSameNumber){
+                                classString+=" green";
+                            }
+                            else if(_this.high.indexOf(item) != -1){
+                                classString+=" high";
+                            }
+                            else if(_this.low.indexOf(item) != -1){
+                                classString+=" low";
+                            }
+                          return <a className={classString}> <h3 className="list-group-item-heading">{item.name + " " + item.number}</h3></a> ;
                         } else{
+
                           return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " "}<span className="rotate">#</span></h3></a> ;
                         }
 
@@ -198,7 +269,7 @@ return {name: ""}
         var ToogleHide = React.createClass({
         klikk : function(){
         console.log("Kliket")
-                socket.emit("toogleHide", {});
+                socket.emit("toggleHide", {});
         },
                 render: function(){
                 return <button className="btn btn-primary" style={divStyle} onClick={this.klikk}>ToogleHide</button>;
