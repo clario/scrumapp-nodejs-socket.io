@@ -219,7 +219,7 @@ io.on('connection', function (socket) {
         var cookieStringen = "user=" + randomSomething;
         
         socket.request.headers.cookie = 'user=' + randomSomething + '; expires=' + expires + '; path=/';
-        var pa = addPerson(cookieStringen);
+        addPerson(cookieStringen);
 
 
 
@@ -227,11 +227,21 @@ io.on('connection', function (socket) {
         leggTilCookie(socket);
 
     } else{
-        //strange state;
+           var userCookie = socket.request.headers.cookie;
+        var index = userCookie.indexOf("user=");
+        var uCookie = userCookie.substring(index, userCookie.length);
+        console.log(uCookie);
+        //Before user=cb50446e-1e11-4372-9156-b249f2c4e3b1; expires=; expires=Thu, 26 Mar 2015 21:25:21 GMT; path=/
+        //After user=cb50446e-1e11-4372-9156-b249f2c4e3b1
+        uCookie = uCookie.substring(0,41);
+
+         updateLastActive(uCookie);
     }
 
     socket.emit("toogleHide", {"hide": hide});
     var tempppl = getLastActive();
+   // console.log(JSON.stringify(tempppl));
+    //console.log("sending out new list");
      io.emit("newList", tempppl);
 
     //console.log("En bruker koblet til.");
