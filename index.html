@@ -19,6 +19,7 @@
   .rotate{
       animation: spin 4s linear infinite;
       -webkit-animation: spin2 3s infinite linear;
+      color: #DE1078;
   }
 
   @keyframes spin {
@@ -72,7 +73,7 @@ border-color: #d6e9c6;
 
 	var user =  new Date().toString();
 	console.log(user);
-
+	console.log("starter opp");
 	var ppl = [];
 
   socket.on("setCookie",function(data){
@@ -213,8 +214,11 @@ return {name: ""}
                             }
                           return <a className={classString}> <h3 className="list-group-item-heading">{item.name + " " + item.number}</h3></a> ;
                         } else{
-
-                          return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " "}<span className="rotate">#</span></h3></a> ;
+                        	if(item.number !== 0){
+                        		return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " "}<span className="rotate">#</span></h3></a> ;
+                        	}else{
+                          return <a className="list-group-item"> <h3 className="list-group-item-heading">{item.name + " "}<span>#</span></h3></a> ;
+                 	     }
                         }
 
                         }
