@@ -76,6 +76,7 @@ border-color: #d6e9c6;
 	var ppl = [];
 
   socket.on("setCookie",function(data){
+
       console.log(JSON.stringify(data))
       var val = data.cookieValue;
       var date = data.expires;
@@ -86,7 +87,7 @@ border-color: #d6e9c6;
   });
 
   socket.on("areYouThere",function(){
-  	console.log("Server ask if you are there");
+ 
   	
   	socket.emit("yesIamHere",{});
   });
@@ -130,7 +131,7 @@ return {name: ""}
         var Liste = React.createClass({
         getInitialState  : function(){
 
-        socket.on('newList', this.newData);
+       			socket.on('newList', this.newData);
                 socket.on("toggleHide", this.toggleHide);
                 return {array:[], hide : false};
         },
@@ -179,6 +180,7 @@ return {name: ""}
                 toggleHide : function(data){
               //  audio.play();
                     var _this = this;
+                    console.log("Hide Data er:" + data.hide)
                     if (data.hide){
                         _this.setHighAndLow();
                         _this.setState({hide: false});
@@ -198,7 +200,7 @@ return {name: ""}
                 render: function(){
                 var _this = this;
                         function listItem(item){
-                        if (!_this.state.hide){
+                        if (_this.state.hide){
                             var classString="list-group-item";
                             if(_this.allSameNumber){
                                 classString+=" green";
@@ -275,7 +277,7 @@ return {name: ""}
         });
         var Restart = React.createClass({
         klikk : function(){
-        console.log("Kliket")
+        		console.log("Restarting!")
                 socket.emit("restart", {});
         },
                 render: function(){
