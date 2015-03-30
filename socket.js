@@ -12,10 +12,6 @@ var port = process.env.PORT || 5000;
 
 app.listen(port);
 
-
-
-
-
 console.log("Server starter på port "+port+".");
 
 var hide = true;
@@ -43,7 +39,6 @@ function checkIfExist(ses) {
     return -1;
 }
 
-
 function setNumberOnUser(number, ses) {
 
     var index = checkIfExist(ses);
@@ -54,8 +49,6 @@ function setNumberOnUser(number, ses) {
     } else {
         console.log("session dosnt exist!");
     }
-
-
 }
 
 function setNameOnUser(name, ses) {
@@ -72,7 +65,6 @@ function setNameOnUser(name, ses) {
 
 
 function giRandomTall() {
-
     for (var i = 0; i < ppl.length; i++) {
 
         var person = ppl[i];
@@ -175,7 +167,6 @@ function addCookie(socket) {
     var cookie = {"cookieValue": randomSomething, "expires": date};
 
     //console.log("Sender cookie " + JSON.stringify(cookie));
-
     socket.emit("setCookie", cookie);
 
     var cookieStringen = "user=" + randomSomething;
@@ -183,7 +174,6 @@ function addCookie(socket) {
    // socket.request.headers.cookie = 'user=' + randomSomething + '; expires=' + expires + '; path=/';
 
     addPerson(cookieStringen);
-
 
 }
 
@@ -228,17 +218,12 @@ io.on('connection', function (socket) {
         var tempppl = getLastActive();
         io.emit("newList", tempppl);
 
-
     });
 
     socket.on('toggleHide', function () {
         hide = !hide;
-        if (!hide) {
-            io.emit("toggleHide", {"hide": hide});
-        } else {
-            io.emit("toggleHide", {"hide": hide});
-
-        }
+        io.emit("toggleHide", {"hide": hide});
+ 
     });
 
 
@@ -250,8 +235,6 @@ io.on('connection', function (socket) {
         var tempppl = getLastActive();
         io.emit("newList", tempppl);
     });
-
-
 
 
     socket.on("setNumber", function (data) {
@@ -276,7 +259,6 @@ io.on('connection', function (socket) {
 
     });
 
-
     socket.on("setName", function (data) {
         //	console.log("Setting number" + data.number);
 
@@ -293,8 +275,6 @@ io.on('connection', function (socket) {
         io.emit("newList", tempppl);
 
     });
-
-
 
     socket.on("yesIamHere",function(data){
         
