@@ -12,18 +12,12 @@ var port = process.env.PORT || 5000;
 
 app.listen(port);
 
-console.log("Server starter på port "+port+".");
-
+console.log("Server starting on port "+port+".");
 var hide = true;
-
 var personer = ["Arne", "Hans", "Jonas", "Vegard", "Lars", "Anders", "Martin", "Erik", "Silje", "Petter", "Roger", "Sveinung", "Tore", "Svein", "Gemma", "Sofie", "Ragnhild", "Lasse", "Ida", "Jakob", "Tobias", "Preben"];
 var numbers = [1, 3, 5, 8, 13, 20, 40, 60, 100];
-
-//var ppl = [{"name":"Richard","number":0, "ses":""},{"name":"Vemund","number":0,"ses":""}];
 var ppl = [];
-
 var sessions = [];
-
 var currentActiveUsers = 0;
 
 
@@ -70,7 +64,6 @@ function giRandomTall() {
         var person = ppl[i];
         person.number = numbers[Math.floor(Math.random() * numbers.length)];
         ppl[i] = person;
-
     }
 }
 
@@ -120,8 +113,8 @@ function getLastActive(){
             array.push(ppl[i]);
             active++;
         }
-
     }
+   
     currentActiveUsers = active;
 
     array = getLowestAndHighest(array);
@@ -142,43 +135,37 @@ function getLowestAndHighest(array){
             } if(array[i].number < lowestValue){
                 lowestValue = array[i].number;
             }
-
         }
 
         if(highestValue !== lowestValue){
             var numberUsersWithHighest = usersWithNumber(array,highestValue);
             var numberUsersWithLowest = usersWithNumber(array,lowestValue);
-            console.log("C high : " + numberUsersWithHighest);
-            console.log("C low : " + numberUsersWithLowest);
+           
             if(numberUsersWithLowest === 1 || numberUsersWithHighest === 1){
 
-
-                 for(var i = 0; i < array.length; i++){
-                if(array[i].number === highestValue && numberUsersWithHighest === 1){
-                    array[i].highest = true;
-                }else{
-                     array[i].highest = false;
-                }
-                if(array[i].number === lowestValue && numberUsersWithLowest === 1){
-                    array[i].lowest = true;
-                }else{
-                    array[i].lowest = false;
+                for(var i = 0; i < array.length; i++){
+                    if(array[i].number === highestValue && numberUsersWithHighest === 1){
+                        array[i].highest = true;
+                    }else{
+                        array[i].highest = false;
+                    }
+                    if(array[i].number === lowestValue && numberUsersWithLowest === 1){
+                        array[i].lowest = true;
+                    }else{
+                        array[i].lowest = false;
+                    }
                 }
             }
-            }
-           
 
-        }else{
+            }else{
 
-            for(var i = 0; i < array.length; i++){
+                for(var i = 0; i < array.length; i++){
                     array[i].highest = false;
                     array[i].lowest = false;
+                 }
             }
-        }
-
-       console.log("highest : " + highestValue + " lowestValue " + lowestValue);
-
     }
+   
     return array;
 
 }
@@ -278,6 +265,7 @@ io.on('connection', function (socket) {
     
 
     socket.emit("toggleHide", {"hide": hide});
+   // console.log("Bruker koblet til, Hide har følgande verdi: " + hide)
     var tempppl = getLastActive();
      io.emit("newList", tempppl);
 
@@ -311,8 +299,6 @@ io.on('connection', function (socket) {
         //	console.log("Setting number" + data.number);
 
         var userCookie = socket.request.headers.cookie;
-
-        console.log(userCookie);
         var index = userCookie.indexOf("user=");
         //console.log("indeksen er " + index);
         //	console.log(userCookie);
