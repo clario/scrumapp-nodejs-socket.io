@@ -183,11 +183,11 @@ return {name: ""}
                     var _this = this;
                     console.log("Hide Data er:" + data.hide)
                     if (data.hide){
-                        _this.setHighAndLow();
+                       // _this.setHighAndLow();
                         _this.setState({hide: false});
                     }
                     else{
-                        _this.resetHighAndLow();
+                      //  _this.resetHighAndLow();
                         _this.setState({hide: true});
                     }
 
@@ -203,13 +203,13 @@ return {name: ""}
                         function listItem(item){
                         if (_this.state.hide){
                             var classString="list-group-item";
-                            if(_this.allSameNumber){
+                            if(item.lowest === false && item.highest ===false){
                                 classString+=" green";
                             }
-                            else if(_this.high.indexOf(item) != -1){
+                            else if(item.highest === true){
                                 classString+=" high";
                             }
-                            else if(_this.low.indexOf(item) != -1){
+                            else if(item.lowest === true){
                                 classString+=" low";
                             }
                           return <a className={classString}> <h3 className="list-group-item-heading">{item.name + " " + item.number}</h3></a> ;

@@ -87,7 +87,7 @@ function addPerson(ses) {
     console.log(ses);
     var randomPerson = personer[Math.floor(Math.random() * personer.length)];
     var now = new Date().getTime();
-    var per = {"name": randomPerson, "number": 0, "ses": ses, "lastActive": now};
+    var per = {"name": randomPerson, "number": 0, "ses": ses, "lastActive": now, "highest" : false, "lowest" : false};
     ppl.push(per);
     return ppl;
 };
@@ -123,8 +123,76 @@ function getLastActive(){
 
     }
     currentActiveUsers = active;
+
+    array = getLowestAndHighest(array);
+
     //console.log("Number of active users: " + active + "/" + size);
     return array;
+}
+
+function getLowestAndHighest(array){
+
+    var highestValue = 0;
+    var lowestValue = 100;
+
+    if(array.length > 1){
+        for(var i = 0; i < array.length; i++){
+            if(array[i].number > highestValue){
+                highestValue = array[i].number;
+            } if(array[i].number < lowestValue){
+                lowestValue = array[i].number;
+            }
+
+        }
+
+        if(highestValue !== lowestValue){
+            var numberUsersWithHighest = usersWithNumber(array,highestValue);
+            var numberUsersWithLowest = usersWithNumber(array,lowestValue);
+            console.log("C high : " + numberUsersWithHighest);
+            console.log("C low : " + numberUsersWithLowest);
+            if(numberUsersWithLowest === 1 || numberUsersWithHighest === 1){
+
+
+                 for(var i = 0; i < array.length; i++){
+                if(array[i].number === highestValue && numberUsersWithHighest === 1){
+                    array[i].highest = true;
+                }else{
+                     array[i].highest = false;
+                }
+                if(array[i].number === lowestValue && numberUsersWithLowest === 1){
+                    array[i].lowest = true;
+                }else{
+                    array[i].lowest = false;
+                }
+            }
+            }
+           
+
+        }else{
+
+            for(var i = 0; i < array.length; i++){
+                    array[i].highest = false;
+                    array[i].lowest = false;
+            }
+        }
+
+       console.log("highest : " + highestValue + " lowestValue " + lowestValue);
+
+    }
+    return array;
+
+}
+
+
+function usersWithNumber(array,number){
+    
+    var count = 0;
+    for(var i = 0; i < array.length; i++){
+        if(array[i].number === number){
+            count++;
+        }
+    }
+    return count;
 }
 
 function randomString() {
@@ -207,7 +275,7 @@ io.on('connection', function (socket) {
         addPerson(uCookie);
     }
 
-    console.log("sender ut hide som har følgande verdi: " + hide);
+    
 
     socket.emit("toggleHide", {"hide": hide});
     var tempppl = getLastActive();
@@ -221,6 +289,8 @@ io.on('connection', function (socket) {
     });
 
     socket.on('toggleHide', function () {
+          var tempppl = getLastActive();
+         io.emit("newList", tempppl);
         hide = !hide;
         io.emit("toggleHide", {"hide": hide});
  
