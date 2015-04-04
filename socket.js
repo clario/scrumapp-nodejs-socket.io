@@ -225,11 +225,14 @@ function addToTempArray(socket,cookie){
 
         var userCookie = socket.request.headers.cookie;
         console.log("setNumber " + userCookie);
-        var index = userCookie.indexOf("io=");
+        if(userCookie){
+                    var index = userCookie.indexOf("io=");
        var currentUserCookie = userCookie.substring(index, userCookie.length);
         console.log("Ny funksjon " + userCookie + " la til denne " + cookie);
 
         tempSessionMap[currentUserCookie] = cookie;
+        }
+
 }
 
 
