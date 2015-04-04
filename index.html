@@ -88,15 +88,16 @@ border-color: #d6e9c6;
   });
 
   socket.on("areYouThere",function(){
- 
-  	
   	socket.emit("yesIamHere",{});
   });
 
 </script>
 
   <script type="text/jsx">
+var inputStyle = {
+        "marginLeft": 10,
 
+                };
 
   var InputNavn = React.createClass({
 
@@ -117,17 +118,18 @@ return {name: ""}
         },
         onKeydown: function(event){
             if (event.keyCode === 13){
-                document.getElementById('sendButton').click()
+               // document.getElementById('sendButton').click()
+               this.onClick();
             }
         },
         render: function(){
 
-        return <div>Fyll inn navn:<input type="text" placeholder="navn" onKeyDown={this.onKeydown} onChange={this.onChange} value={this.state.name} />
-                <button id="sendButton" style={okStyle} className="btn btn-default" onClick={this.onClick}>Ok</button>
+        return <div>Fill in name:<input type="text" placeholder="name" onKeyDown={this.onKeydown} style={inputStyle} onChange={this.onChange} value={this.state.name} />
+              
                 </div>;
         }
 
-
+  //<button id="sendButton" style={okStyle} className="btn //btn-default" onClick={this.onClick}>Ok</button>
 });
         var Liste = React.createClass({
         getInitialState  : function(){
@@ -137,7 +139,7 @@ return {name: ""}
                 return {array:[], hide : false};
         },
                 newData : function(data){
-
+               // console.log(JSON.stringify(data));
                 //console.log("nyBruker joina");
                 ppl = data;
                         if (data){

@@ -6,23 +6,23 @@ var app = require('http').createServer(function (req, res) {
 });
 var io = require('socket.io')(app);
 
-
-
 var port = process.env.PORT || 5000;
 
 app.listen(port);
 
 console.log("Server starting on port "+port+".");
 var hide = true;
-var personer = ["Arne", "Hans", "Jonas", "Vegard", "Lars", "Anders", "Martin", "Erik", "Silje", "Petter", "Roger", "Sveinung", "Tore", "Svein", "Gemma", "Sofie", "Ragnhild", "Lasse", "Ida", "Jakob", "Tobias", "Preben"];
+var personer = ["Arne", "Hans", "Jonas", "Vegard", "Lars", "Anders", "Martin", "Erik", "Silje", "Petter", "Roger", "Sveinung", "Tore", "Svein", "Gemma", "Sofie", "Nils", "Lasse", "Ida", "Jakob", "Tobias", "Preben"];
 var numbers = [1, 3, 5, 8, 13, 20, 40, 60, 100];
 var ppl = [];
-var sessions = [];
-var currentActiveUsers = 0;
+var tempSessionMap = {};
 
+
+var currentActiveUsers = 0;
 
 function checkIfExist(ses) {
     console.log("checking if sess exist, input: " + ses )
+    
     for (var i = 0; i < ppl.length; i++) {
         console.log(ppl[i].ses);
         if (ppl[i].ses === ses) {
@@ -30,20 +30,31 @@ function checkIfExist(ses) {
             return i;
         }
     }
+    //Check the tempSessionMap
+    console.log("Her er utgangspunktet: " + ses);
+    if(tempSessionMap[ses]){
+        console.log("fann denn her " +  tempSessionMap[ses])
+       var tempIndex = checkIfExist(tempSessionMap[ses])
+        return tempIndex;
+    }
+
     return -1;
 }
 
 function setNumberOnUser(number, ses) {
-
+    console.log(JSON.stringify(ses));
+    console.log(ses);
     var index = checkIfExist(ses);
     if (index !== -1) {
         ppl[index].number = number;
         console.log("Setter " + number + " på bruker " + ppl[index].name);
         return ppl;
     } else {
+
         console.log("session dosnt exist!");
     }
 }
+
 
 function setNameOnUser(name, ses) {
 
@@ -56,7 +67,6 @@ function setNameOnUser(name, ses) {
         console.log("session dosnt exist!");
     }
 }
-
 
 function giRandomTall() {
     for (var i = 0; i < ppl.length; i++) {
@@ -211,10 +221,21 @@ function userGotCookie(socket){
     }
 }
 
+function addToTempArray(socket,cookie){
+
+        var userCookie = socket.request.headers.cookie;
+        console.log("setNumber " + userCookie);
+        var index = userCookie.indexOf("io=");
+       var currentUserCookie = userCookie.substring(index, userCookie.length);
+        console.log("Ny funksjon " + userCookie + " la til denne " + cookie);
+
+        tempSessionMap[currentUserCookie] = cookie;
+}
+
 
 function addCookie(socket) {
     var date = new Date();
-    date.setTime(date.getTime() + (1 * 24 * 60 * 60 * 1000)); // set day value to expiry
+    date.setTime(date.getTime() + (2 * 24 * 60 * 60 * 1000)); // set day value to expiry
     //date = new Date("Thu, 01 Jan 1970 00:00:00 UTC");
     var expires = "; expires=" + date.toGMTString();
     var randomSomething = randomString();
@@ -222,25 +243,29 @@ function addCookie(socket) {
     var cookie = {"cookieValue": randomSomething, "expires": date};
 
     //console.log("Sender cookie " + JSON.stringify(cookie));
+    console.log("Sender cookie til klient "  + JSON.stringify(cookie));
     socket.emit("setCookie", cookie);
 
-    var cookieStringen = "user=" + randomSomething;
+     var cookieStringen = "user=" + randomSomething;
+
+    console.log(cookieStringen + "  er cookieStringen");
     //io.emit("newList", pa);
    // socket.request.headers.cookie = 'user=' + randomSomething + '; expires=' + expires + '; path=/';
 
-    addPerson(cookieStringen);
 
+    addPerson(cookieStringen);
+    return cookieStringen;
 }
 
 
 io.on('connection', function (socket) {
-    
+    console.log("heiii");
     setInterval(function() {
      socket.emit("areYouThere",{});
     }, 60 * 1000);
 
     var userCookie = socket.request.headers.cookie;
-    console.log(userCookie);
+    console.log("Denne er der no: " +  userCookie);
     var uCookie;
     var index = -1;
     if (userCookie != null) {
@@ -252,7 +277,9 @@ io.on('connection', function (socket) {
     //User does not have any cookie!
     if (index === -1 || userCookie === null) {
         console.log("User dont have a cookie!")
-         addCookie(socket);
+         var cookieValue = addCookie(socket);
+         //fixing the refresh bug
+         addToTempArray(socket,cookieValue);
 
        //The user is known, settting him as active.
     } else if(checkIfExist(uCookie) !== -1){
@@ -299,6 +326,8 @@ io.on('connection', function (socket) {
         //	console.log("Setting number" + data.number);
 
         var userCookie = socket.request.headers.cookie;
+
+        console.log("setNumber " + userCookie);
         var index = userCookie.indexOf("user=");
         //console.log("indeksen er " + index);
         //	console.log(userCookie);
