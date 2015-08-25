@@ -13,7 +13,7 @@ app.listen(port);
 console.log("Server starting on port "+port+".");
 var hide = true;
 var personer = ["Arne", "Hans", "Jonas", "Vegard", "Lars", "Anders", "Martin", "Erik", "Silje", "Petter", "Roger", "Sveinung", "Tore", "Svein", "Gemma", "Sofie", "Nils", "Lasse", "Ida", "Jakob", "Tobias", "Preben"];
-var numbers = [1, 3, 5, 8, 13, 20, 40, 60, 100];
+var numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20];
 var ppl = [];
 var tempSessionMap = {};
 
